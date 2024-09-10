@@ -1,3 +1,6 @@
+using Company.Route.DAL.Data.Contexts;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Company.Route.PL
 {
     public class Program
@@ -8,6 +11,8 @@ namespace Company.Route.PL
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            //builder.Services.AddScoped<AppDbContext>(); // Allow DI for AppDbContext
+            builder.Services.AddDbContext<AppDbContext>(); // Add DbContext to DI
 
             var app = builder.Build();
 

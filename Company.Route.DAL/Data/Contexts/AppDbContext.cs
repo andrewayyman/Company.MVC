@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Company.Route.DAL.Data.Contexts
 {
-    internal class AppDbContext : DbContext 
+    public class AppDbContext : DbContext
     {
         protected override void OnConfiguring( DbContextOptionsBuilder optionsBuilder )
         {
-            optionsBuilder.UseSqlServer(" Server=WILDRABBIT; Database=CompanyMVC; Trusted_Connection=True; TrustServerCertificate = True " );
+            optionsBuilder.UseSqlServer(" Server=WILDRABBIT; Database=CompanyMVC; Trusted_Connection=True; TrustServerCertificate = True ");
         }
 
         // to use config class
