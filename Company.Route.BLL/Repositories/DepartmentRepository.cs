@@ -11,7 +11,7 @@ namespace Company.Route.BLL.Repositories
 {
     // THis Repository is used to perform CRUD operations on Department Table
     // It's implements IDepartmentRepository interface
-    internal class DepartmentRepository : IDepartmentRepository
+    public class DepartmentRepository : IDepartmentRepository
     {
         private readonly AppDbContext _context; // NULL , readonly means it can be initialized only once [Constructor] cannot be changed , why not const? because const need to be initialized at the time of declaration
         public DepartmentRepository(AppDbContext context ) // dependency injection , Ask CLR to create object of AppDbContext when creating object of DepartmentRepository

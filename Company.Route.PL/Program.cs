@@ -1,3 +1,5 @@
+using Company.Route.BLL.Interfaces;
+using Company.Route.BLL.Repositories;
 using Company.Route.DAL.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,8 +27,9 @@ namespace Company.Route.PL
             {
                 // Read it from AppSettings
                 Options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-            }); 
-
+            });
+            // means when we ask for IDepartmentRepository , create object of DepartmentRepository
+            builder.Services.AddScoped<IDepartmentRepository,DepartmentRepository>(); 
 
 
             var app = builder.Build();
