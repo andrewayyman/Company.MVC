@@ -21,6 +21,7 @@ namespace Company.Route.DAL.Models
         public string Address { get; set; }
 
         [Required(ErrorMessage = "Salary IS Required !")]
+        [DataType(DataType.Currency)]
         public decimal Salary { get; set; }
 
         [EmailAddress]

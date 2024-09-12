@@ -30,6 +30,7 @@ namespace Company.Route.PL
             });
             // means when we ask for IDepartmentRepository , create object of DepartmentRepository
             builder.Services.AddScoped<IDepartmentRepository,DepartmentRepository>(); 
+            builder.Services.AddScoped<IEmployeeRepository,EmployeeRepository>(); 
 
 
             var app = builder.Build();
