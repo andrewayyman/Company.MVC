@@ -42,6 +42,23 @@ namespace Company.Route.PL.Controllers
 
             return View(model);
         }
+
+        public IActionResult Details( int? id )
+        {
+            if ( id is null ) return BadRequest(); // 400
+
+            var department = _departmentRepository.GetById(id.Value);
+
+            if ( department == null ) return NotFound();
+
+            return View(department);
+
+        }
+
+
+
+
+
     }
 
 
