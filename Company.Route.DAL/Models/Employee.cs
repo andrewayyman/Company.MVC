@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Company.Route.DAL.Models
 {
-    public class Employee
+    public class Employee : BaseEntity
     {
 
-        public int Id { get; set; }
+        //public int Id { get; set; }
 
         [Required(ErrorMessage ="Name IS Required !")]
         public string Name { get; set; }

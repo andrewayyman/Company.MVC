@@ -9,13 +9,14 @@ namespace Company.Route.BLL.Interfaces
 {
     // This Repository is used to perform CRUD operations on Department Table
     // Generic Repository
-    public interface IDepartmentRepository
+    public interface IDepartmentRepository  : IGenericRepository<Department>
     {
-        IEnumerable<Department> GetAll();
-        Department GetById( int id );
-        int Add( Department entity );
-        int Update( Department entity );
-        int Delete( Department entity );
+        // ---------- NOW IN GENERIC REPO CLASS ----------------- // 
+        //IEnumerable<Department> GetAll();
+        //Department GetById( int id );
+        //int Add( Department entity );
+        //int Update( Department entity );
+        //int Delete( Department entity );
 
 
     }
