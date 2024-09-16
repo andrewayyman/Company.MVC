@@ -19,7 +19,31 @@ namespace Company.Route.PL.Controllers
         public IActionResult Index()
         {
             var employees = _employeeRepository.GetAll();
+
+            #region ViewData , ViewBag , TempData
+            //// Extra info ? 
+            //// Binding through views Using Dictionary [Key , Value] pair 
+            //// inherited from controller class
+            //// [ViewData , ViewBag] : transfer data from action to view or from view to view *ONE WAY* 
+            //// [ViewTemp] : transfer data from action to action 
+
+            //// 1. ViewData : Strongly Typed 
+            //ViewData["Message"] = "Hello from ViewData";
+
+            //// 2. ViewBAg : Dynamic Type "Weak data Type"
+            //ViewBag.Message = "Hello from ViewBag"; // access with . 
+
+            //// --------- NOTE THAT BOTH STORE IN SAME DICT THEN THEY OVERRIDE THE LAST VALUE STORES ---------- // 
+
+            //// 3.TempData : transfer data from action to action , used as dict 
+            //// Example on create method 
+            #endregion
+
+
             return View(employees);
+
+
+
 
         }
 
@@ -35,10 +59,20 @@ namespace Company.Route.PL.Controllers
         [HttpPost]
         public IActionResult Create( Employee model )
         {
+            // 3. TempData => Action to action
+
             if ( ModelState.IsValid )
             {
                 var Count = _employeeRepository.Add(model);
-                if ( Count > 0 ) return RedirectToAction(nameof(Index));
+                if ( Count > 0 )
+                {
+                    TempData["Message"] = "Employee Created Succefully !";
+                }
+                else
+                {
+                    TempData["Message"] = "An Error Occurred  !";
+                }
+                return RedirectToAction(nameof(Index));
             }
 
             return View(model);
@@ -129,12 +163,12 @@ namespace Company.Route.PL.Controllers
                 }
 
             }
-            catch ( Exception ex)
+            catch ( Exception ex )
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
 
             }
-            return View(model) ;
+            return View(model);
 
         }
 

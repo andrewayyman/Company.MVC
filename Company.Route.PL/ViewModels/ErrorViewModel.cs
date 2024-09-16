@@ -1,4 +1,4 @@
-namespace Company.Route.PL.Models
+namespace Company.Route.PL.ViewModels
 {
     public class ErrorViewModel
     {

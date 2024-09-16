@@ -1,4 +1,4 @@
-using Company.Route.PL.Models;
+using Company.Route.PL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
