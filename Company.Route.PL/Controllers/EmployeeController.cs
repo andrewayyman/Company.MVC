@@ -10,9 +10,12 @@ namespace Company.Route.PL.Controllers
     {
         // Allow for interface not concrete class
         private readonly IEmployeeRepository _employeeRepository; // Null 
-        public EmployeeController( IEmployeeRepository employeeController )
+        private readonly IDepartmentRepository _departmentRepository;
+
+        public EmployeeController( IEmployeeRepository employeeController , IDepartmentRepository departmentRepository )
         {
             _employeeRepository = employeeController;
+            _departmentRepository = departmentRepository;
         }
 
         [HttpGet]
@@ -52,8 +55,13 @@ namespace Company.Route.PL.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            var departments = _departmentRepository.GetAll();
+            // Use ViewDict to send extra info from request to view ViewData , ViewBag , TempData
 
+            // 1 ViewData
+            ViewData["Departments"] = departments;
+
+            return View();
         }
 
         [HttpPost]
@@ -71,7 +79,7 @@ namespace Company.Route.PL.Controllers
                 else
                 {
                     TempData["Message"] = "An Error Occurred  !";
-                }
+                } 
                 return RedirectToAction(nameof(Index));
             }
 

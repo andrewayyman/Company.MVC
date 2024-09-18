@@ -34,6 +34,10 @@ namespace Company.Route.DAL.Models
         public DateTime HiringDate { get; set; }
         public DateTime DateOfCreation { get; set; } = DateTime.Now;
 
+         // Relations
+        public Department? WorkFor { get; set; } // navigation prop
+        public int? WorkForID { get; set; }     // foreign key
+
 
 
     }

@@ -1,7 +1,14 @@
-﻿
-@* Partial View is to Prevent the redundant code and it's for the small blocks if code if they are repeating *@
-
+﻿@* Partial View is to Prevent the redundant code and it's for the small blocks if code if they are repeating *@
 @model Employee
+
+
+<!-- Cast sequence to type SelectListItem Cuz we need to pass it in this form  -->
+<!-- also it have many overloads can pass dataValueField => what you exactly select while choosing any option "Id" -->
+<!-- also it have many overloads can pass dataTextField  => The option name that appears in the select list "Name"  -->
+@{
+    var departments = new SelectList(ViewData["Departments"] as IEnumerable<Department> , "Id" ,"Name");
+
+}
 
 <div class="form-group">
     <label asp-for="Name" class="col-form-label"></label>
@@ -43,6 +50,14 @@
     <label asp-for="HiringDate" class="col-form-label"></label>
     <input asp-for="HiringDate" class="form-control" />
     <span asp-validation-for="HiringDate" class="text-danger"></span>
+</div>
+
+<br />
+<div class="form-group">
+    <label asp-for="WorkFor" class="col-form-label"></label>
+    <select asp-for="WorkForID" asp-items="departments" class="form-control" >  <!-- this helpertag needs sequence of type SelectListItem then u need to cast the sequence befor passing it -->
+        <option value="@null" disabled > -- Select Department -- </option>
+    </select>
 </div>
 
 

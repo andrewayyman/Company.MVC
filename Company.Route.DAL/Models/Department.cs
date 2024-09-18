@@ -18,5 +18,11 @@ namespace Company.Route.DAL.Models
         [DisplayName("Date Of Creation ")] // Display Name is used to change the name of the column in the view
         public DateTime DateOfCreation { get; set; }
 
+        // Relations
+        public ICollection<Employee>? Employees  { get; set; } // Nav Property
+
+    
+    
+    
     }
 }
