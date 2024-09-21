@@ -40,7 +40,7 @@
 <br />
 <br />
 
-<a asp-action="Create" class="btn btn-primary">Create Department</a>
+<a asp-action="Create" class="btn btn-primary">Create Employee</a>
 <br />
 <br />
 
@@ -60,6 +60,7 @@ else
             <tr>
                 <th>@Html.DisplayNameFor(D => D.Name)        </th>
                 <th>@Html.DisplayNameFor(D => D.Age)         </th>
+                <th>@Html.DisplayNameFor(D => D.WorkFor)     </th>
                 <th>@Html.DisplayNameFor(D => D.Address)     </th>
                 <th>@Html.DisplayNameFor(D => D.Salary)      </th>
                 <th>@Html.DisplayNameFor(D => D.Email)       </th>
@@ -77,14 +78,15 @@ else
             @foreach ( var employee in Model )
             {
                 <tr>
-                    <td>@employee.Name        </td>
-                    <td>@employee.Age         </td>
-                    <td>@employee.Address     </td>
-                    <td>@employee.Salary      </td>
-                    <td>@employee.Email       </td>
-                    <td>@employee.PhoneNumber </td>
-                    <td>@employee.IsActive    </td>
-                    <td>@employee.HiringDate  </td>
+                    <td>@employee.Name          </td>
+                    <td>@employee.Age           </td>
+                    <td>@employee.WorkFor?.Name </td>
+                    <td>@employee.Address       </td>
+                    <td>@employee.Salary        </td>
+                    <td>@employee.Email         </td>
+                    <td>@employee.PhoneNumber   </td>
+                    <td>@employee.IsActive      </td>
+                    <td>@employee.HiringDate    </td>
 
                     <partial name="_ButtonPartialView" model="@employee.Id"></partial>
 

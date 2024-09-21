@@ -114,7 +114,11 @@ namespace Company.Route.PL.Controllers
         [HttpGet]
         public IActionResult Edit( int? id )
         {
+            var departments = _departmentRepository.GetAll();
+            // Use ViewDict to send extra info from request to view ViewData , ViewBag , TempData
 
+            // 1 ViewData
+            ViewData["Departments"] = departments;
             return Details(id, "Edit");
         }
 
@@ -125,6 +129,8 @@ namespace Company.Route.PL.Controllers
         {
             try
             {
+              
+
                 if ( id != model.Id ) return BadRequest(); // Then the id in segment not like the sent from the form 
 
                 var Count = _employeeRepository.Update(model);

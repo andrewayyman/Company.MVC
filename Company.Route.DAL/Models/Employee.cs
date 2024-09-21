@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -12,10 +13,10 @@ namespace Company.Route.DAL.Models
 
         //public int Id { get; set; }
 
-        [Required(ErrorMessage ="Name IS Required !")]
+        [Required(ErrorMessage = "Name IS Required !")]
         public string Name { get; set; }
 
-        [Range(25,60 , ErrorMessage ="Age must be betweeen 25 and 60 ")]
+        [Range(25, 60, ErrorMessage = "Age must be betweeen 25 and 60 ")]
         public int? Age { get; set; }
         [RegularExpression(@"^\d{1,}-[a-zA-Z]+-[a-zA-Z]+-[a-zA-Z]+$", ErrorMessage = "Address must follow the pattern 123-street-city-country.")]
         public string Address { get; set; }
@@ -34,7 +35,8 @@ namespace Company.Route.DAL.Models
         public DateTime HiringDate { get; set; }
         public DateTime DateOfCreation { get; set; } = DateTime.Now;
 
-         // Relations
+        // Relations
+        [DisplayName("Department")]
         public Department? WorkFor { get; set; } // navigation prop
         public int? WorkForID { get; set; }     // foreign key
 
