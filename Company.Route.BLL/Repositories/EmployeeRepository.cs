@@ -10,15 +10,22 @@ using System.Threading.Tasks;
 
 namespace Company.Route.BLL.Repositories
 {
-    public class EmployeeRepository :GenericRepository<Employee> , IEmployeeRepository
+    public class EmployeeRepository : GenericRepository<Employee>, IEmployeeRepository
     {
         //We already inherit this from the ctor of generic repo then we chain in the ctor of tha parent to inject 
 
 
         //private readonly AppDbContext _context;
-        public EmployeeRepository(AppDbContext context) : base(context)
+        public EmployeeRepository( AppDbContext context ) : base(context)
         {
             //_context = context;
+        }
+
+        public IEnumerable<Employee> GetByName( string name )
+        {
+            return _context.Employees.Where(E => E.Name.ToLower().Contains(name.ToLower()))
+                                     .Include(E => E.WorkFor)
+                                     .ToList();
         }
 
 

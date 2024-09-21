@@ -24,6 +24,9 @@
 <br /> *@
 
 
+
+
+
 @if ( !string.IsNullOrEmpty(TempData["Message"] as string) )
 {
     <div class="alet alert-primary">
@@ -39,6 +42,24 @@
 <h1>All Employees</h1>
 <br />
 <br />
+
+
+<form asp-action="Index">
+
+    <div class="row m-5">
+
+        <div class="col-8">
+            <input type="text" name="InputSearch" class="form-control" />
+        </div>
+
+        <div class="col-4">
+            <input type="submit" value="Search" class="btn btn-success" />
+        </div>
+
+    </div>
+
+</form>
+
 
 <a asp-action="Create" class="btn btn-primary">Create Employee</a>
 <br />

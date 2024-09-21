@@ -14,7 +14,7 @@ namespace Company.Route.BLL.Repositories
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
 
-        private readonly AppDbContext _context;
+        private protected readonly AppDbContext _context; // to make it accessible within any children 
         public GenericRepository( AppDbContext context )
         {
             _context = context;

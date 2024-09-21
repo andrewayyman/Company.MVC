@@ -18,10 +18,23 @@ namespace Company.Route.PL.Controllers
             _departmentRepository = departmentRepository;
         }
 
-        [HttpGet]
-        public IActionResult Index()
+
+
+        ///=>> in case of search feature u need to make it post and u need to make it get to getall the employees both in same action then make it without any specified method it will be hybrid 
+        ///[HttpGet] ,, if u dont specify the request method it will be flexible :: get when need , post when need
+        
+        public IActionResult Index(string InputSearch)
         {
-            var employees = _employeeRepository.GetAll();
+            var employees = Enumerable.Empty<Employee>();
+            if (string.IsNullOrEmpty(InputSearch))
+            {
+                 employees = _employeeRepository.GetAll();
+            }
+            else
+            {
+                 employees = _employeeRepository.GetByName(InputSearch);
+            }
+
 
             #region ViewData , ViewBag , TempData
             //// Extra info ? 
