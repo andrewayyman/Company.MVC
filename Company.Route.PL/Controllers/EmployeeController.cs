@@ -1,6 +1,8 @@
-﻿using Company.Route.BLL.Interfaces;
+﻿using AutoMapper;
+using Company.Route.BLL.Interfaces;
 using Company.Route.BLL.Repositories;
 using Company.Route.DAL.Models;
+using Company.Route.PL.ViewModels.Employess;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,31 +13,27 @@ namespace Company.Route.PL.Controllers
         // Allow for interface not concrete class
         private readonly IEmployeeRepository _employeeRepository; // Null 
         private readonly IDepartmentRepository _departmentRepository;
+        private readonly IMapper _mapper;
 
-        public EmployeeController( IEmployeeRepository employeeController , IDepartmentRepository departmentRepository )
+        public EmployeeController( IEmployeeRepository employeeController,
+                                   IDepartmentRepository departmentRepository,
+                                   IMapper mapper 
+            )
         {
             _employeeRepository = employeeController;
             _departmentRepository = departmentRepository;
+            _mapper = mapper;
         }
 
 
 
+
+        #region Index Actions
+
         ///=>> in case of search feature u need to make it post and u need to make it get to getall the employees both in same action then make it without any specified method it will be hybrid 
         ///[HttpGet] ,, if u dont specify the request method it will be flexible :: get when need , post when need
-        
-        public IActionResult Index(string InputSearch)
+        public IActionResult Index( string InputSearch )
         {
-            var employees = Enumerable.Empty<Employee>();
-            if (string.IsNullOrEmpty(InputSearch))
-            {
-                 employees = _employeeRepository.GetAll();
-            }
-            else
-            {
-                 employees = _employeeRepository.GetByName(InputSearch);
-            }
-
-
             #region ViewData , ViewBag , TempData
             //// Extra info ? 
             //// Binding through views Using Dictionary [Key , Value] pair 
@@ -56,12 +54,24 @@ namespace Company.Route.PL.Controllers
             #endregion
 
 
-            return View(employees);
+            var employees = Enumerable.Empty<Employee>();
+            if ( string.IsNullOrEmpty(InputSearch) )
+            {
+                employees = _employeeRepository.GetAll();
+            }
+            else
+            {
+                employees = _employeeRepository.GetByName(InputSearch);
+            }
+
+            var mappedEmp = _mapper.Map <IEnumerable< EmployeeViewModel>> (employees);
+            return View(mappedEmp);
 
 
 
 
         }
+        #endregion
 
         #region Create Actions 
 
@@ -78,13 +88,41 @@ namespace Company.Route.PL.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create( Employee model )
+        public IActionResult Create( EmployeeViewModel model )
         {
             // 3. TempData => Action to action
 
             if ( ModelState.IsValid )
             {
-                var Count = _employeeRepository.Add(model);
+                // We need Casting EmployeeViewModel -->> Employee  Which is mapping [Manual , Auto ]
+
+                #region 1. Manual Mapping
+                //// 1. Manual Mapping
+                //Employee employee = new Employee()
+                //{
+                //    Id = model.Id,
+                //    Address = model.Address,
+                //    Name = model.Name,
+                //    Salary = model.Salary,
+                //    Age = model.Age,
+                //    HiringDate = model.HiringDate,
+                //    IsActive = model.IsActive,
+                //    WorkFor = model.WorkFor,
+                //    WorkForID = model.WorkForID,
+                //    Email = model.Email,
+                //    PhoneNumber = model.PhoneNumber,
+                //}; 
+                #endregion
+
+                #region 2. Auto Mapper
+
+                var employee = _mapper.Map<EmployeeViewModel, Employee>(model);
+
+
+                #endregion
+
+
+                var Count = _employeeRepository.Add(employee);
                 if ( Count > 0 )
                 {
                     TempData["Message"] = "Employee Created Succefully !";
@@ -92,7 +130,7 @@ namespace Company.Route.PL.Controllers
                 else
                 {
                     TempData["Message"] = "An Error Occurred  !";
-                } 
+                }
                 return RedirectToAction(nameof(Index));
             }
 
@@ -111,6 +149,8 @@ namespace Company.Route.PL.Controllers
             if ( id is null ) return BadRequest();
             var employee = _employeeRepository.GetById(id.Value);
             if ( employee is null ) return NotFound();
+
+
             return View(viewname, employee);
 
 
@@ -138,15 +178,16 @@ namespace Company.Route.PL.Controllers
 
         [HttpPost] // FromRoute is to bind the id frm segment only to don't make any conflict
         [ValidateAntiForgeryToken] // to allow only request from ur client side [used usually with post method in MVC APP]
-        public IActionResult Edit( [FromRoute] int? id, Employee model )
+        public IActionResult Edit( [FromRoute] int? id, EmployeeViewModel model )
         {
             try
             {
-              
+
+                var employee = _mapper.Map<Employee>(model);
 
                 if ( id != model.Id ) return BadRequest(); // Then the id in segment not like the sent from the form 
 
-                var Count = _employeeRepository.Update(model);
+                var Count = _employeeRepository.Update(employee);
                 if ( ModelState.IsValid )
                 {
                     if ( Count > 0 ) return RedirectToAction(nameof(Index));
@@ -177,14 +218,16 @@ namespace Company.Route.PL.Controllers
 
 
         [HttpPost]
-        public IActionResult Delete( [FromRoute] int? id, Employee model )
+        public IActionResult Delete( [FromRoute] int? id, EmployeeViewModel model )
         {
             try
             {
+                var employee = _mapper.Map<EmployeeViewModel, Employee>(model);
+
                 if ( id != model.Id ) return BadRequest();
                 if ( ModelState.IsValid )
                 {
-                    var Count = _employeeRepository.Delete(model);
+                    var Count = _employeeRepository.Delete(employee);
                     if ( Count > 0 ) { return RedirectToAction(nameof(Index)); }
 
                 }

@@ -4,6 +4,9 @@ using Company.Route.DAL.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using AutoMapper;
+using Company.Route.PL.Helpers;
+
 
 namespace Company.Route.PL
 {
@@ -28,9 +31,13 @@ namespace Company.Route.PL
                 // Read it from AppSettings
                 Options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+
             // means when we ask for IDepartmentRepository , create object of DepartmentRepository
             builder.Services.AddScoped<IDepartmentRepository,DepartmentRepository>(); 
-            builder.Services.AddScoped<IEmployeeRepository,EmployeeRepository>(); 
+            builder.Services.AddScoped<IEmployeeRepository,EmployeeRepository>();
+            // Allow AutoMapper , it needs object from mappingprofile 
+            builder.Services.AddAutoMapper(typeof(MappingProfiles)); // transient lifetime
+
 
 
             var app = builder.Build();
