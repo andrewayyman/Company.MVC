@@ -37,22 +37,22 @@ namespace Company.Route.BLL.Repositories
             return _context.Set<T>().Find(id);
         }
 
-        public int Add( T entity )
+        public void Add( T entity )
         {
             _context.Set<T>().Add(entity);
-            return _context.SaveChanges();
+            //return _context.SaveChanges(); // No need we will save it in the unit of work
         }
 
-        public int Update( T entity )
+        public void Update( T entity )
         {
             _context.Set<T>().Update(entity);
-            return _context.SaveChanges();
+            //return _context.SaveChanges();
         }
 
-        public int Delete( T entity )
+        public void Delete( T entity )
         {
             _context.Set<T>().Remove(entity);
-            return _context.SaveChanges();
+            //return _context.SaveChanges();
         }
 
 

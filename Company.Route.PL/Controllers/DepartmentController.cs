@@ -8,20 +8,30 @@ namespace Company.Route.PL.Controllers
     public class DepartmentController : Controller
     {
         // Allow for interface not concrete class
-        private readonly IDepartmentRepository _departmentRepository; // Null 
-        public DepartmentController( IDepartmentRepository departmentRepository )
+        //private readonly IDepartmentRepository _departmentRepository; // Null 
+        private readonly IUnitOfWork _unitOfWork;
+
+        public DepartmentController ( 
+
+            //IDepartmentRepository departmentRepository, 
+            IUnitOfWork UnitOfWork
+            
+        )
         {
-            _departmentRepository = departmentRepository;
+            _unitOfWork = UnitOfWork;
+            //_departmentRepository = departmentRepository;
         }
 
 
+        #region Index Actions 
         [HttpGet] // Default
         public IActionResult Index()
         {
-            var departments = _departmentRepository.GetAll();
+            var departments = _unitOfWork.DepartmentRepository.GetAll();
             return View(departments);
         }
 
+        #endregion
 
         #region Create Actions
 
@@ -38,7 +48,8 @@ namespace Company.Route.PL.Controllers
         {
             if ( ModelState.IsValid )
             {
-                var Count = _departmentRepository.Add(model);
+                _unitOfWork.DepartmentRepository.Add(model);
+                var Count = _unitOfWork.Complete();
                 if ( Count > 0 ) return RedirectToAction(nameof(Index));
             }
 
@@ -53,7 +64,7 @@ namespace Company.Route.PL.Controllers
         public IActionResult Details( int? id, string viewName = "Details" ) // passing view for refactoring the code , use it in any action with same bhaviour but change the returned view
         {
             if ( id is null ) return BadRequest(); // 400
-            var department = _departmentRepository.GetById(id.Value);
+            var department = _unitOfWork.DepartmentRepository.GetById(id.Value);
             if ( department == null ) return NotFound();
             return View(viewName, department); // another overload
 
@@ -85,7 +96,8 @@ namespace Company.Route.PL.Controllers
             {
                 if ( id != model.Id ) return BadRequest(); // Then the id in segment not like the sent from the form 
 
-                var Count = _departmentRepository.Update(model);
+                _unitOfWork.DepartmentRepository.Update(model);
+                var Count = _unitOfWork.Complete();
                 if ( ModelState.IsValid )
                 {
                     if ( Count > 0 ) return RedirectToAction(nameof(Index));
@@ -130,7 +142,8 @@ namespace Company.Route.PL.Controllers
 
                 if ( ModelState.IsValid )
                 {
-                    var Count = _departmentRepository.Delete(model);
+                    _unitOfWork.DepartmentRepository.Delete(model);
+                    var Count = _unitOfWork.Complete();
                     if ( Count > 0 ) return RedirectToAction(nameof(Index));
                 }
 

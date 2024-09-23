@@ -8,20 +8,44 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Company.Route.PL.Controllers
 {
+
+    #region Request Flow
+    // Now Communication is  ::::: Now Controllers -->> UnitOfWork -->> Repositories -->> DbContext
+
+    // The Full request flow from request to response
+    // 1. Request from client to controller using route of the action
+    // 2. Controller get the request and call the unitofwork to get the data from database
+    // 3. Unitofwork call the repository to get the data from database
+    // 4. Repository get the data from database using the DbContext
+    // 5. Repository return the data to the unitofwork
+    // 6. Unitofwork return the data to the controller
+    // 7. Controller return the data to the client as response [view in mvc]
+
+    #endregion
+
     public class EmployeeController : Controller
     {
-        // Allow for interface not concrete class
-        private readonly IEmployeeRepository _employeeRepository; // Null 
-        private readonly IDepartmentRepository _departmentRepository;
+        /// Allow for interface not concrete class
+        ///private readonly IEmployeeRepository _employeeRepository; // Null 
+        ///private readonly IDepartmentRepository _departmentRepository;
+
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public EmployeeController( IEmployeeRepository employeeController,
-                                   IDepartmentRepository departmentRepository,
-                                   IMapper mapper 
-            )
+        public EmployeeController(
+
+            /// NOTE :: After using unitofwork no need to inject repositories we inject unitofwork and use it to access the repositories
+            ///IEmployeeRepository employeeController,                                    
+            ///IDepartmentRepository departmentRepository,
+
+            IUnitOfWork unitOfWork,
+            IMapper mapper
+        )
         {
-            _employeeRepository = employeeController;
-            _departmentRepository = departmentRepository;
+            ///_employeeRepository = employeeController;
+            ///_departmentRepository = departmentRepository;
+
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
@@ -34,6 +58,7 @@ namespace Company.Route.PL.Controllers
         ///[HttpGet] ,, if u dont specify the request method it will be flexible :: get when need , post when need
         public IActionResult Index( string InputSearch )
         {
+
             #region ViewData , ViewBag , TempData
             //// Extra info ? 
             //// Binding through views Using Dictionary [Key , Value] pair 
@@ -53,18 +78,17 @@ namespace Company.Route.PL.Controllers
             //// Example on create method 
             #endregion
 
-
             var employees = Enumerable.Empty<Employee>();
             if ( string.IsNullOrEmpty(InputSearch) )
             {
-                employees = _employeeRepository.GetAll();
+                employees = _unitOfWork.EmployeeRepository.GetAll();
             }
             else
             {
-                employees = _employeeRepository.GetByName(InputSearch);
+                employees = _unitOfWork.EmployeeRepository.GetByName(InputSearch);
             }
 
-            var mappedEmp = _mapper.Map <IEnumerable< EmployeeViewModel>> (employees);
+            var mappedEmp = _mapper.Map<IEnumerable<EmployeeViewModel>>(employees);
             return View(mappedEmp);
 
 
@@ -78,7 +102,7 @@ namespace Company.Route.PL.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            var departments = _departmentRepository.GetAll();
+            var departments = _unitOfWork.DepartmentRepository.GetAll();
             // Use ViewDict to send extra info from request to view ViewData , ViewBag , TempData
 
             // 1 ViewData
@@ -122,7 +146,8 @@ namespace Company.Route.PL.Controllers
                 #endregion
 
 
-                var Count = _employeeRepository.Add(employee);
+                _unitOfWork.EmployeeRepository.Add(employee); // state changed to added
+                var Count = _unitOfWork.Complete(); // Save Changes
                 if ( Count > 0 )
                 {
                     TempData["Message"] = "Employee Created Succefully !";
@@ -147,7 +172,7 @@ namespace Company.Route.PL.Controllers
         public IActionResult Details( int? id, string viewname = "Details" )
         {
             if ( id is null ) return BadRequest();
-            var employee = _employeeRepository.GetById(id.Value);
+            var employee = _unitOfWork.EmployeeRepository.GetById(id.Value);
             if ( employee is null ) return NotFound();
 
 
@@ -167,7 +192,7 @@ namespace Company.Route.PL.Controllers
         [HttpGet]
         public IActionResult Edit( int? id )
         {
-            var departments = _departmentRepository.GetAll();
+            var departments = _unitOfWork.DepartmentRepository.GetAll();
             // Use ViewDict to send extra info from request to view ViewData , ViewBag , TempData
 
             // 1 ViewData
@@ -187,7 +212,8 @@ namespace Company.Route.PL.Controllers
 
                 if ( id != model.Id ) return BadRequest(); // Then the id in segment not like the sent from the form 
 
-                var Count = _employeeRepository.Update(employee);
+                _unitOfWork.EmployeeRepository.Update(employee);
+                var Count = _unitOfWork.Complete();
                 if ( ModelState.IsValid )
                 {
                     if ( Count > 0 ) return RedirectToAction(nameof(Index));
@@ -227,7 +253,8 @@ namespace Company.Route.PL.Controllers
                 if ( id != model.Id ) return BadRequest();
                 if ( ModelState.IsValid )
                 {
-                    var Count = _employeeRepository.Delete(employee);
+                    _unitOfWork.EmployeeRepository.Delete(employee);
+                    var Count = _unitOfWork.Complete();
                     if ( Count > 0 ) { return RedirectToAction(nameof(Index)); }
 
                 }

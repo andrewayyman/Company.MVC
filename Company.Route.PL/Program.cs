@@ -33,8 +33,13 @@ namespace Company.Route.PL
             });
 
             // means when we ask for IDepartmentRepository , create object of DepartmentRepository
-            builder.Services.AddScoped<IDepartmentRepository,DepartmentRepository>(); 
-            builder.Services.AddScoped<IEmployeeRepository,EmployeeRepository>();
+            //builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            //builder.Services.AddScoped<IEmployeeRepository,EmployeeRepository>();
+
+            // NOTE :: AFTER USING UNITOFWORK NO NEED TO INJECT REPOSITORIES WE INJECT UNITOFWORK AND USE IT TO ACCESS THE REPOSITORIES
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
             // Allow AutoMapper , it needs object from mappingprofile 
             builder.Services.AddAutoMapper(typeof(MappingProfiles)); // transient lifetime
 
