@@ -1,5 +1,5 @@
 ﻿@* Partial View is to Prevent the redundant code and it's for the small blocks if code if they are repeating *@
-@model Employee
+@model EmployeeViewModel
 
 
 <!-- Cast sequence to type SelectListItem Cuz we need to pass it in this form  -->
@@ -60,5 +60,13 @@
     </select>
 </div>
 
+<br />
+<div>
+    
+    <label  asp-for="Image"></label>
+    <br />
+    <input  asp-for="Image"/>
+
+</div>
 
 

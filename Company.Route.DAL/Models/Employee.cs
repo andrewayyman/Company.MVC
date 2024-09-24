@@ -29,6 +29,9 @@ namespace Company.Route.DAL.Models
         public Department? WorkFor { get; set; } // navigation prop
         public int? WorkForID { get; set; }     // foreign key
 
+        // Image 
+        public string? ImageName { get; set; }
+
 
 
     }

@@ -33,5 +33,8 @@ namespace Company.Route.PL.ViewModels.Employess
         public Department? WorkFor { get; set; } // navigation prop
         public int? WorkForID { get; set; }     // foreign key
 
+        public IFormFile? Image { get; set; }
+        public string? ImageName { get; set; }
+
     }
 }

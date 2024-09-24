@@ -1,5 +1,4 @@
-﻿
-@model Employee
+﻿@model EmployeeViewModel
 @{
     ViewData["Title"] = "Details";
 }
@@ -13,6 +12,7 @@
 
  
     <partial name="PartialViews/DeleteDetailsEmployeePartialView" model="Model"></partial>
+    <input hidden asp-for="ImageName" />
 
 
     <br />

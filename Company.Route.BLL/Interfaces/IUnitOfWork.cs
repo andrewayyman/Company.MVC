@@ -59,8 +59,7 @@ namespace Company.Route.BLL.Interfaces
         public IDepartmentRepository DepartmentRepository { get; }
         public IEmployeeRepository EmployeeRepository { get; }
         int Complete(); // to replace it by savechanges COMMIT
-
-        void Dispose();
+        new void Dispose();
 
     }
 }

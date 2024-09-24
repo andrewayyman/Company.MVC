@@ -2,14 +2,15 @@
 using Company.Route.BLL.Interfaces;
 using Company.Route.BLL.Repositories;
 using Company.Route.DAL.Models;
+using Company.Route.PL.Helpers;
 using Company.Route.PL.ViewModels.Employess;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace Company.Route.PL.Controllers
 {
 
-    #region Request Flow
+    #region Request Flow After UnitofWork
     // Now Communication is  ::::: Now Controllers -->> UnitOfWork -->> Repositories -->> DbContext
 
     // The Full request flow from request to response
@@ -118,8 +119,16 @@ namespace Company.Route.PL.Controllers
 
             if ( ModelState.IsValid )
             {
-                // We need Casting EmployeeViewModel -->> Employee  Which is mapping [Manual , Auto ]
+                // Upload Image
+                if ( model.Image is not null )
+                {
+                    model.ImageName = DocumentSettings.UploadFile(model.Image, "images");
 
+                }
+
+
+                // Mapping EmployeeViewModel -->> Employee
+                // We need Casting EmployeeViewModel -->> Employee  Which is mapping [Manual , Auto ]
                 #region 1. Manual Mapping
                 //// 1. Manual Mapping
                 //Employee employee = new Employee()
@@ -138,12 +147,12 @@ namespace Company.Route.PL.Controllers
                 //}; 
                 #endregion
 
-                #region 2. Auto Mapper
-
+                // 2. AutoMapper
                 var employee = _mapper.Map<EmployeeViewModel, Employee>(model);
 
 
-                #endregion
+
+
 
 
                 _unitOfWork.EmployeeRepository.Add(employee); // state changed to added
@@ -174,9 +183,9 @@ namespace Company.Route.PL.Controllers
             if ( id is null ) return BadRequest();
             var employee = _unitOfWork.EmployeeRepository.GetById(id.Value);
             if ( employee is null ) return NotFound();
+            var employeeViewModel = _mapper.Map<EmployeeViewModel>(employee);
 
-
-            return View(viewname, employee);
+            return View(viewname, employeeViewModel);
 
 
         }
@@ -207,6 +216,17 @@ namespace Company.Route.PL.Controllers
         {
             try
             {
+                if ( model.Image is not null )
+                {
+                    DocumentSettings.DeleteFile(model.ImageName, "images");
+                }
+
+                if ( model.Image is not null )
+                {
+                    model.ImageName = DocumentSettings.UploadFile(model.Image, "images");
+                }
+
+
 
                 var employee = _mapper.Map<Employee>(model);
 
@@ -255,7 +275,15 @@ namespace Company.Route.PL.Controllers
                 {
                     _unitOfWork.EmployeeRepository.Delete(employee);
                     var Count = _unitOfWork.Complete();
-                    if ( Count > 0 ) { return RedirectToAction(nameof(Index)); }
+                    if ( Count > 0 )
+                    {
+                        if ( model.Image is not null )
+                        {
+                            DocumentSettings.DeleteFile(model.ImageName, "images");
+                        }
+
+                        return RedirectToAction(nameof(Index));
+                    }
 
                 }
 
