@@ -57,7 +57,7 @@ namespace Company.Route.PL.Controllers
 
         ///=>> in case of search feature u need to make it post and u need to make it get to getall the employees both in same action then make it without any specified method it will be hybrid 
         ///[HttpGet] ,, if u dont specify the request method it will be flexible :: get when need , post when need
-        public IActionResult Index( string InputSearch )
+        public async Task<IActionResult> Index( string InputSearch )
         {
 
             #region ViewData , ViewBag , TempData
@@ -82,11 +82,11 @@ namespace Company.Route.PL.Controllers
             var employees = Enumerable.Empty<Employee>();
             if ( string.IsNullOrEmpty(InputSearch) )
             {
-                employees = _unitOfWork.EmployeeRepository.GetAll();
+                employees = await _unitOfWork.EmployeeRepository.GetAllAsync();
             }
             else
             {
-                employees = _unitOfWork.EmployeeRepository.GetByName(InputSearch);
+                employees = await _unitOfWork.EmployeeRepository.GetByNameAsync(InputSearch);
             }
 
             var mappedEmp = _mapper.Map<IEnumerable<EmployeeViewModel>>(employees);
@@ -101,9 +101,9 @@ namespace Company.Route.PL.Controllers
         #region Create Actions 
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var departments = _unitOfWork.DepartmentRepository.GetAll();
+            var departments = await _unitOfWork.DepartmentRepository.GetAllAsync();
             // Use ViewDict to send extra info from request to view ViewData , ViewBag , TempData
 
             // 1 ViewData
@@ -113,7 +113,7 @@ namespace Company.Route.PL.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create( EmployeeViewModel model )
+        public async Task<IActionResult> Create( EmployeeViewModel model )
         {
             // 3. TempData => Action to action
 
@@ -155,8 +155,8 @@ namespace Company.Route.PL.Controllers
 
 
 
-                _unitOfWork.EmployeeRepository.Add(employee); // state changed to added
-                var Count = _unitOfWork.Complete(); // Save Changes
+                await _unitOfWork.EmployeeRepository.AddAsync(employee); // state changed to added
+                var Count = await _unitOfWork.CompleteAsync(); // Save Changes
                 if ( Count > 0 )
                 {
                     TempData["Message"] = "Employee Created Succefully !";
@@ -177,12 +177,16 @@ namespace Company.Route.PL.Controllers
         #endregion
 
         #region Details Actions
+
         [HttpGet]
-        public IActionResult Details( int? id, string viewname = "Details" )
+        public async Task<IActionResult> Details( int? id, string viewname = "Details" )
         {
             if ( id is null ) return BadRequest();
-            var employee = _unitOfWork.EmployeeRepository.GetById(id.Value);
+
+            var employee = await _unitOfWork.EmployeeRepository.GetByIdAsync(id.Value);
+
             if ( employee is null ) return NotFound();
+
             var employeeViewModel = _mapper.Map<EmployeeViewModel>(employee);
 
             return View(viewname, employeeViewModel);
@@ -190,29 +194,25 @@ namespace Company.Route.PL.Controllers
 
         }
 
-
-
-
-
         #endregion
 
         #region Edit Actions
 
         [HttpGet]
-        public IActionResult Edit( int? id )
+        public async Task<IActionResult> Edit( int? id )
         {
-            var departments = _unitOfWork.DepartmentRepository.GetAll();
+            var departments = await _unitOfWork.DepartmentRepository.GetAllAsync();
             // Use ViewDict to send extra info from request to view ViewData , ViewBag , TempData
 
             // 1 ViewData
             ViewData["Departments"] = departments;
-            return Details(id, "Edit");
+            return await Details(id, "Edit");
         }
 
 
         [HttpPost] // FromRoute is to bind the id frm segment only to don't make any conflict
         [ValidateAntiForgeryToken] // to allow only request from ur client side [used usually with post method in MVC APP]
-        public IActionResult Edit( [FromRoute] int? id, EmployeeViewModel model )
+        public async Task<IActionResult> Edit( [FromRoute] int? id, EmployeeViewModel model )
         {
             try
             {
@@ -233,7 +233,7 @@ namespace Company.Route.PL.Controllers
                 if ( id != model.Id ) return BadRequest(); // Then the id in segment not like the sent from the form 
 
                 _unitOfWork.EmployeeRepository.Update(employee);
-                var Count = _unitOfWork.Complete();
+                var Count = await _unitOfWork.CompleteAsync();
                 if ( ModelState.IsValid )
                 {
                     if ( Count > 0 ) return RedirectToAction(nameof(Index));
@@ -255,16 +255,14 @@ namespace Company.Route.PL.Controllers
 
         #region Delete Actions
         [HttpGet]
-        public IActionResult Delete( int? id )
+        public async Task<IActionResult> Delete( int? id )
         {
-
-
-            return Details(id, "Delete");
+            return await Details(id, "Delete");
         }
 
 
         [HttpPost]
-        public IActionResult Delete( [FromRoute] int? id, EmployeeViewModel model )
+        public async Task<IActionResult> Delete( [FromRoute] int? id, EmployeeViewModel model )
         {
             try
             {
@@ -274,7 +272,7 @@ namespace Company.Route.PL.Controllers
                 if ( ModelState.IsValid )
                 {
                     _unitOfWork.EmployeeRepository.Delete(employee);
-                    var Count = _unitOfWork.Complete();
+                    var Count = await _unitOfWork.CompleteAsync();
                     if ( Count > 0 )
                     {
                         if ( model.Image is not null )
@@ -296,6 +294,7 @@ namespace Company.Route.PL.Controllers
             return View(model);
 
         }
+
 
         #endregion
 

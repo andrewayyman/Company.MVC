@@ -18,7 +18,7 @@ namespace Company.Route.BLL.Interfaces
 
         // ------------- ADD Any specifed method for the employee clas u need ---------------------- //
 
-        IEnumerable<Employee> GetByName( string name );
+        Task<IEnumerable<Employee>> GetByNameAsync( string name );
 
     }
 }

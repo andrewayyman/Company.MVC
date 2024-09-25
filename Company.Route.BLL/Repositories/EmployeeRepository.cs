@@ -21,11 +21,11 @@ namespace Company.Route.BLL.Repositories
             //_context = context;
         }
 
-        public IEnumerable<Employee> GetByName( string name )
+        public async Task<IEnumerable<Employee>> GetByNameAsync( string name )
         {
-            return _context.Employees.Where(E => E.Name.ToLower().Contains(name.ToLower()))
+            return await _context.Employees.Where(E => E.Name.ToLower().Contains(name.ToLower()))
                                      .Include(E => E.WorkFor)
-                                     .ToList();
+                                     .ToListAsync();
         }
 
 

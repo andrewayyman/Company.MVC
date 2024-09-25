@@ -74,10 +74,12 @@ namespace Company.Route.BLL.Repositories
         public IDepartmentRepository DepartmentRepository => _DepartmentRepository;
         public IEmployeeRepository EmployeeRepository => _EmployeeRepository;
 
-        public int Complete()
+        public async Task<int> CompleteAsync()
         {
-            return _context.SaveChanges();
+            return await _context.SaveChangesAsync();
         }
+
+
 
         // it will be executed automattically when request is done and the life time of the object is ended
         // but we need the clr to know that we've dispose method then we implement IDisposable interface to make sure that the dispose method is called
@@ -86,7 +88,7 @@ namespace Company.Route.BLL.Repositories
             _context.Dispose();
         }
 
-    } 
+    }
 
 
 }

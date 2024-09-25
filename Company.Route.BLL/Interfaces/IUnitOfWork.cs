@@ -58,7 +58,7 @@ namespace Company.Route.BLL.Interfaces
     {
         public IDepartmentRepository DepartmentRepository { get; }
         public IEmployeeRepository EmployeeRepository { get; }
-        int Complete(); // to replace it by savechanges COMMIT
+        Task<int> CompleteAsync(); // to replace it by savechanges COMMIT
         new void Dispose();
 
     }
