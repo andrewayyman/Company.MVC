@@ -6,8 +6,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using AutoMapper;
 using Company.Route.PL.Helpers;
+using Microsoft.AspNetCore.Identity;
+using Company.Route.DAL.Models;
 
- #region Identity Package Functions 
+#region Identity Package Services  
 
 /*
   
@@ -91,6 +93,25 @@ namespace Company.Route.PL
 
             // Allow AutoMapper , it needs object from mappingprofile 
             builder.Services.AddAutoMapper(typeof(MappingProfiles)); // transient lifetime
+
+            // Services for User nad SignIn Managers after using identity
+            #region Identity Servies
+            //builder.Services.AddScoped<UserManager<ApplicationUser>>();
+            //builder.Services.AddScoped<SignInManager<ApplicationUser>>();
+            //builder.Services.AddScoped<RoleManager<ApplicationUser>>(); 
+            #endregion // instead of them we can use only one do the same
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(config =>
+               {
+                   config.Password.RequiredUniqueChars = 2;
+                   config.Password.RequireDigit = true;
+                   config.Password.RequireLowercase = true;
+                   config.Password.RequireUppercase = true;
+                   config.Password.RequireNonAlphanumeric = true;
+                   config.User.RequireUniqueEmail = true;
+                   config.Lockout.MaxFailedAccessAttempts = 5; // attempts lock account after it
+                   config.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(3); // time locked
+
+                }).AddEntityFrameworkStores<AppDbContext>();
 
 
 

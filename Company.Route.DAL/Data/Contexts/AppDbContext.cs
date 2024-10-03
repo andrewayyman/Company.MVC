@@ -13,7 +13,7 @@ namespace Company.Route.DAL.Data.Contexts
 {
     // we inherted from IdentityDbContext to use Identity Package
     // we have 7 classes in IdentityDbContext added to db 
-    public class AppDbContext : IdentityDbContext
+    public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
         // Automatically Chaining on parameterless constructor , we can chain on the parameterized constructor which take DbContectOptions as parameter
         public AppDbContext( DbContextOptions<AppDbContext> options) : base(options)
