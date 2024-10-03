@@ -7,6 +7,55 @@ using Microsoft.Extensions.Options;
 using AutoMapper;
 using Company.Route.PL.Helpers;
 
+ #region Identity Package Functions 
+
+/*
+  
+ *  3 Main Services in Identity Package  * 
+ 
+ ---------- 1. UserManager   -> Manage User      -------------- 
+
+    [5 Functions]
+    - Create User     (Sign Up)
+    - Update User 
+    - Delete User 
+    - Read User Data 
+    - Confirm Account (Email Confirmation)
+
+
+ ---------- 2. SignInManager -> Authentaction    -------------- 
+
+    [3 Functions]
+    - Sign In 
+    - Sign Out 
+    - IsSIgned (Check if user is signed in)
+    ++++ More Functions ++++
+    - Reset Password
+    - Two Factor Authentication
+    - OTP Authentication
+    - External Login (Google, Facebook, Twitter, Microsoft)
+
+
+ ---------- 3. RoleManager   -> Manage Roles     -------------- 
+    
+    - Create Role
+    - Update Role
+    - Delete Role
+
+
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ */
+
+
+#endregion
+
 
 namespace Company.Route.PL
 {
@@ -57,14 +106,12 @@ namespace Company.Route.PL
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.UseAuthorization();
-
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
             app.Run();
         }

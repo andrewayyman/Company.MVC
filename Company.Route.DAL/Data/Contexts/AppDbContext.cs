@@ -1,4 +1,6 @@
 ﻿using Company.Route.DAL.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,7 +11,9 @@ using System.Threading.Tasks;
 
 namespace Company.Route.DAL.Data.Contexts
 {
-    public class AppDbContext : DbContext
+    // we inherted from IdentityDbContext to use Identity Package
+    // we have 7 classes in IdentityDbContext added to db 
+    public class AppDbContext : IdentityDbContext
     {
         // Automatically Chaining on parameterless constructor , we can chain on the parameterized constructor which take DbContectOptions as parameter
         public AppDbContext( DbContextOptions<AppDbContext> options) : base(options)
@@ -22,11 +26,16 @@ namespace Company.Route.DAL.Data.Contexts
         //    optionsBuilder.UseSqlServer(" Server=WILDRABBIT; Database=CompanyMVC; Trusted_Connection=True; TrustServerCertificate = True ");
         //}
 
-        // to use config class
+        // to run fluent api
         protected override void OnModelCreating( ModelBuilder modelBuilder )
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<IdentityRole>()
+                        .ToTable("Roles");
+            modelBuilder.Entity<IdentityUser>()
+                        .ToTable("Users");
+
         }
 
 
