@@ -1,10 +1,12 @@
 ﻿using Company.Route.BLL.Interfaces;
 using Company.Route.BLL.Repositories;
 using Company.Route.DAL.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Company.Route.PL.Controllers
 {
+    [Authorize]
     public class DepartmentController : Controller
     {
         // Allow for interface not concrete class

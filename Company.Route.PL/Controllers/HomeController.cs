@@ -1,9 +1,12 @@
 using Company.Route.PL.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace Company.Route.PL.Controllers
 {
+    [Authorize]
+
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

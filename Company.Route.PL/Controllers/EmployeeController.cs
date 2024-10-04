@@ -4,6 +4,7 @@ using Company.Route.BLL.Repositories;
 using Company.Route.DAL.Models;
 using Company.Route.PL.Helpers;
 using Company.Route.PL.ViewModels.Employess;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -23,6 +24,8 @@ namespace Company.Route.PL.Controllers
     // 7. Controller return the data to the client as response [view in mvc]
 
     #endregion
+
+    [Authorize]
 
     public class EmployeeController : Controller
     {

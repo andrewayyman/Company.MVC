@@ -102,17 +102,23 @@ namespace Company.Route.PL
             #endregion // instead of them we can use only one do the same
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(config =>
                {
-                   config.Password.RequiredUniqueChars = 2;
-                   config.Password.RequireDigit = true;
-                   config.Password.RequireLowercase = true;
-                   config.Password.RequireUppercase = true;
-                   config.Password.RequireNonAlphanumeric = true;
-                   config.User.RequireUniqueEmail = true;
-                   config.Lockout.MaxFailedAccessAttempts = 5; // attempts lock account after it
-                   config.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(3); // time locked
+                   //config.Password.RequiredUniqueChars = 2;
+                   //config.Password.RequireDigit = true;
+                   //config.Password.RequireLowercase = true;
+                   //config.Password.RequireUppercase = true;
+                   //config.Password.RequireNonAlphanumeric = true;
+                   //config.User.RequireUniqueEmail = true;
+                   //config.Lockout.MaxFailedAccessAttempts = 5; // attempts lock account after it
+                   //config.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(3); // time locked
 
-                }).AddEntityFrameworkStores<AppDbContext>();
+                })
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders()  ;
 
+            builder.Services.ConfigureApplicationCookie(config =>
+            {
+                config.LoginPath = "/Account/SignIn";
+            });
 
 
             var app = builder.Build();
@@ -128,6 +134,7 @@ namespace Company.Route.PL
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllerRoute(
                 name: "default",
