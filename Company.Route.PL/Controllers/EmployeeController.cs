@@ -99,6 +99,7 @@ namespace Company.Route.PL.Controllers
 
 
         }
+
         #endregion
 
         #region Create Actions 
@@ -115,17 +116,18 @@ namespace Company.Route.PL.Controllers
             return View();
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> Create( EmployeeViewModel model )
+        public async Task<IActionResult> Create( EmployeeViewModel viewModel )
         {
             // 3. TempData => Action to action
 
             if ( ModelState.IsValid )
             {
                 // Upload Image
-                if ( model.Image is not null )
+                if ( viewModel.Image is not null )
                 {
-                    model.ImageName = DocumentSettings.UploadFile(model.Image, "images");
+                    viewModel.ImageName = DocumentSettings.UploadFile(viewModel.Image, "images");
 
                 }
 
@@ -151,7 +153,7 @@ namespace Company.Route.PL.Controllers
                 #endregion
 
                 // 2. AutoMapper
-                var employee = _mapper.Map<EmployeeViewModel, Employee>(model);
+                var employee = _mapper.Map<EmployeeViewModel, Employee>(viewModel);
 
 
 
@@ -171,7 +173,7 @@ namespace Company.Route.PL.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(model);
+            return View(viewModel);
 
         }
 
@@ -215,25 +217,25 @@ namespace Company.Route.PL.Controllers
 
         [HttpPost] // FromRoute is to bind the id frm segment only to don't make any conflict
         [ValidateAntiForgeryToken] // to allow only request from ur client side [used usually with post method in MVC APP]
-        public async Task<IActionResult> Edit( [FromRoute] int? id, EmployeeViewModel model )
+        public async Task<IActionResult> Edit( [FromRoute] int? id, EmployeeViewModel viewModel )
         {
             try
             {
-                if ( model.Image is not null )
+                if ( viewModel.Image is not null )
                 {
-                    DocumentSettings.DeleteFile(model.ImageName, "images");
+                    DocumentSettings.DeleteFile(viewModel.ImageName, "images");
                 }
 
-                if ( model.Image is not null )
+                if ( viewModel.Image is not null )
                 {
-                    model.ImageName = DocumentSettings.UploadFile(model.Image, "images");
+                    viewModel.ImageName = DocumentSettings.UploadFile(viewModel.Image, "images");
                 }
 
 
 
-                var employee = _mapper.Map<Employee>(model);
+                var employee = _mapper.Map<Employee>(viewModel);
 
-                if ( id != model.Id ) return BadRequest(); // Then the id in segment not like the sent from the form 
+                if ( id != viewModel.Id ) return BadRequest(); // Then the id in segment not like the sent from the form 
 
                 _unitOfWork.EmployeeRepository.Update(employee);
                 var Count = await _unitOfWork.CompleteAsync();
@@ -249,7 +251,7 @@ namespace Company.Route.PL.Controllers
             }
 
 
-            return View(model);
+            return View(viewModel);
 
 
         }
@@ -265,22 +267,22 @@ namespace Company.Route.PL.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Delete( [FromRoute] int? id, EmployeeViewModel model )
+        public async Task<IActionResult> Delete( [FromRoute] int? id, EmployeeViewModel viewModel )
         {
             try
             {
-                var employee = _mapper.Map<EmployeeViewModel, Employee>(model);
+                var employee = _mapper.Map<EmployeeViewModel, Employee>(viewModel);
 
-                if ( id != model.Id ) return BadRequest();
+                if ( id != viewModel.Id ) return BadRequest();
                 if ( ModelState.IsValid )
                 {
                     _unitOfWork.EmployeeRepository.Delete(employee);
                     var Count = await _unitOfWork.CompleteAsync();
                     if ( Count > 0 )
                     {
-                        if ( model.Image is not null )
+                        if ( viewModel.Image is not null )
                         {
-                            DocumentSettings.DeleteFile(model.ImageName, "images");
+                            DocumentSettings.DeleteFile(viewModel.ImageName, "images");
                         }
 
                         return RedirectToAction(nameof(Index));
@@ -294,7 +296,7 @@ namespace Company.Route.PL.Controllers
                 ModelState.AddModelError(string.Empty, ex.Message);
 
             }
-            return View(model);
+            return View(viewModel);
 
         }
 
