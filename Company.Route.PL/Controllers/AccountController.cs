@@ -1,14 +1,17 @@
 ﻿using Company.Route.DAL.Models;
+using Company.Route.PL.Helpers;
 using Company.Route.PL.ViewModels.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Drawing;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Company.Route.PL.Controllers
 {
-    // Password  : P@$$w0rd
+    // Password01 : P@$$w0rd
+    // Password02 : P@$$w0rD
 
-    public class  AccountController : Controller
+    public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -60,7 +63,7 @@ namespace Company.Route.PL.Controllers
                 {
                     return RedirectToAction(nameof(SignIn));
                 }
-                foreach(var Error in Result.Errors)
+                foreach ( var Error in Result.Errors )
                 {
                     ModelState.AddModelError(string.Empty, Error.Description);
                 }
@@ -81,13 +84,13 @@ namespace Company.Route.PL.Controllers
             return View();
         }
 
-		[HttpPost]
-		public async Task<IActionResult> SignIn(SignInViewModel viewModel)
-		{
-            if(ModelState.IsValid)
+        [HttpPost]
+        public async Task<IActionResult> SignIn( SignInViewModel viewModel )
+        {
+            if ( ModelState.IsValid )
             {
                 var user = await _userManager.FindByEmailAsync(viewModel.Email);
-                if ( user is not null)
+                if ( user is not null )
                 {
                     bool IsPasswordMatches = await _userManager.CheckPasswordAsync(user, viewModel.Password);
                     if ( IsPasswordMatches )
@@ -103,8 +106,8 @@ namespace Company.Route.PL.Controllers
                 }
                 ModelState.AddModelError(string.Empty, "Invalid Login");
             }
-			return View(viewModel);
-		}
+            return View(viewModel);
+        }
 
         #endregion
 
@@ -117,6 +120,86 @@ namespace Company.Route.PL.Controllers
         }
 
         #endregion
+
+        #region ForgetPassword & Send Email 
+        public IActionResult ForgetPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgetPassword( ForgetPasswordViewModel viewModel )
+        {
+            if ( ModelState.IsValid )
+            {
+                var user = await _userManager.FindByEmailAsync(viewModel.Email);
+                if ( user is not null )
+                {
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var ResetPasswordUrl = Url.Action(
+                       "ResetPassword",
+                    "Account",
+                       new { email = viewModel.Email, token = token },
+                     Request.Scheme,   // Scheme (http or https)
+                        Request.Host.ToString() // Host (localhost:port or domain)
+                        );
+                    var email = new Email()
+                    {
+                        Subject = "Reset Your Password",
+                        Reciepints = viewModel.Email,
+                        Body = $"{ResetPasswordUrl}"
+                    };
+                    EmailSettings.SendEmail(email);
+                    return RedirectToAction(nameof(CheckYourInbox));
+                }
+                ModelState.AddModelError(string.Empty, "Invalid Email");
+
+            }
+
+
+            return View(viewModel);
+        }
+
+        public IActionResult CheckYourInbox()
+        {
+            return View();
+        }
+
+
+        public IActionResult ResetPassword( string email, string token )
+        {
+            TempData["email"] = email;
+            TempData["token"] = token;
+            return View();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword( ResetPasswordViewModel viewModel )
+        {
+            if ( ModelState.IsValid )
+            {
+                var email = TempData["email"] as string;
+                var token = TempData["token"] as string;
+                var user = await _userManager.FindByEmailAsync(email);
+                var result = await _userManager.ResetPasswordAsync(user, token, viewModel.Password);
+
+                if ( result.Succeeded )
+                {
+                    return RedirectToAction(nameof(SignIn));
+                }
+
+                foreach ( var Error in result.Errors )
+                {
+                    ModelState.AddModelError(string.Empty, Error.Description);
+                }
+
+
+            }
+            return View(viewModel);
+        } 
+        #endregion
+
 
 
     }
