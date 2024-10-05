@@ -109,7 +109,7 @@ else
                     <td>@employee.IsActive      </td>
                     <td>@employee.HiringDate    </td>
 
-                    <partial name="_ButtonPartialView" model="@employee.Id"></partial>
+                    <partial name="_ButtonPartialView" model="@employee.Id.ToString()"></partial>
 
                 </tr>
             }
