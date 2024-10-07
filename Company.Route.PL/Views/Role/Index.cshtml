@@ -1,0 +1,78 @@
+﻿@model IEnumerable<RoleViewModel>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@if ( !string.IsNullOrEmpty(TempData["Message"] as string) )
+{
+    <div class="alet alert-primary">
+        @TempData["Message"]
+    </div>
+
+}
+
+<h1>All Users</h1>
+<form asp-action="Index">
+
+    <div class="row m-5">
+
+        <div class="col-8">
+            <input type="text" name="InputSearch" class="form-control" />
+        </div>
+
+        <div class="col-4">
+            <input type="submit" value="Search" class="btn btn-success" />
+        </div>
+
+    </div>
+
+</form>
+
+<a asp-action="Create" class="btn btn-primary">Create Employee</a>
+<br />
+<br />
+
+@if ( Model.Count() == 0 )
+{
+    <div class="mt-4 alert alert-warning">
+        <h4>There is No Roles :( </h4>
+    </div>
+
+}
+else
+{
+    <table class="table table-striped table-hover">
+
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(D => D.Id)          </th>
+                <th>@Html.DisplayNameFor(D => D.RoleName)    </th>
+        
+ 
+
+                <th>Details</th>
+                <th>Update</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach ( var role in Model )
+            {
+                <tr>
+                    <td>@role.Id               </td>
+                    <td>@role.RoleName         </td>
+
+
+
+                    <partial name="_ButtonPartialView" model="@role.Id"></partial>
+
+                </tr>
+            }
+        </tbody>
+
+    </table>
+
+}

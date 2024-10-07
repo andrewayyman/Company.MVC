@@ -59,7 +59,7 @@ namespace Company.Route.PL.Controllers
                                                         Email = U.Email,
                                                         Roles = _userManager.GetRolesAsync(U).Result
                                                     }).ToListAsync();
-
+                                        
                 }
 
             }
