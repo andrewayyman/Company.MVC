@@ -4,6 +4,7 @@ using Company.Route.DAL.Models;
 using Company.Route.PL.Helpers;
 using Company.Route.PL.ViewModels.Account;
 using Company.Route.PL.ViewModels.Employess;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -11,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Company.Route.PL.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;

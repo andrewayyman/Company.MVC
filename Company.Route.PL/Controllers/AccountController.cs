@@ -197,9 +197,13 @@ namespace Company.Route.PL.Controllers
 
             }
             return View(viewModel);
-        } 
+        }
         #endregion
 
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
 
 
     }
