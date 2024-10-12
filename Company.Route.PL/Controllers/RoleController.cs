@@ -23,6 +23,7 @@ namespace Company.Route.PL.Controllers
 
 
 
+        [Authorize]
         #region Index Actions 
         public async Task<IActionResult> Index( string InputSearch )
         {
@@ -110,7 +111,8 @@ namespace Company.Route.PL.Controllers
 
 
         #endregion
-
+        
+        [Authorize]
         #region Details Action
 
         [HttpGet]
