@@ -102,6 +102,7 @@ namespace Company.Route.PL.Controllers
 
         #endregion
 
+        [Authorize(Roles = "Admin")]
         #region Create Actions 
 
         [HttpGet]
@@ -201,6 +202,7 @@ namespace Company.Route.PL.Controllers
 
         #endregion
 
+        [Authorize(Roles = "Admin")]
         #region Edit Actions
 
         [HttpGet]
@@ -258,6 +260,7 @@ namespace Company.Route.PL.Controllers
 
         #endregion
 
+        [Authorize(Roles = "Admin")]
         #region Delete Actions
         [HttpGet]
         public async Task<IActionResult> Delete( int? id )

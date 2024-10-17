@@ -8,6 +8,8 @@ using AutoMapper;
 using Company.Route.PL.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Company.Route.DAL.Models;
+using System.Configuration;
+using Company.Route.PL.Settings;
 
 #region Identity Package Services  
 
@@ -120,6 +122,9 @@ namespace Company.Route.PL
                 config.LoginPath = "/Account/SignIn";
             });
 
+            // MailKitSettings
+            builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+            builder.Services.AddTransient<IMailService, EmailSettings>();
 
             var app = builder.Build();
 

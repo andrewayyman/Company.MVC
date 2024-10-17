@@ -1,6 +1,7 @@
 ﻿using Company.Route.DAL.Models;
 using Company.Route.PL.Helpers;
 using Company.Route.PL.ViewModels.Account;
+using MailKit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Drawing;
@@ -9,20 +10,23 @@ using System.Security.Cryptography.X509Certificates;
 namespace Company.Route.PL.Controllers
 {
     // Password01 : P@$$w0rd
-    // Password02 : P@$$w0rD
+    // Password02 :     
 
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly Helpers.IMailService _mailService;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager
+            SignInManager<ApplicationUser> signInManager,
+            Helpers.IMailService mailService
         )
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _mailService = mailService;
         }
 
 
@@ -149,7 +153,8 @@ namespace Company.Route.PL.Controllers
                         Reciepints = viewModel.Email,
                         Body = $"{ResetPasswordUrl}"
                     };
-                    EmailSettings.SendEmail(email);
+                    //EmailSettings.SendEmail(email); // Old way using smtp
+                    _mailService.SendEmail(email);
                     return RedirectToAction(nameof(CheckYourInbox));
                 }
                 ModelState.AddModelError(string.Empty, "Invalid Email");

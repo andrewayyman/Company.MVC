@@ -12,7 +12,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Company.Route.PL.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
+
     public class UserController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -27,7 +28,6 @@ namespace Company.Route.PL.Controllers
         }
 
 
-        [Authorize]
         #region Index Actions 
         public async Task<IActionResult> Index( string InputSearch )
         {
@@ -78,7 +78,6 @@ namespace Company.Route.PL.Controllers
 
         #endregion
 
-        [Authorize]
         #region Details Action
         [HttpGet]
 
@@ -100,6 +99,7 @@ namespace Company.Route.PL.Controllers
 
         #endregion
 
+        [Authorize(Roles = "Admin")]
         #region Edit Actions
 
         [HttpGet]
@@ -141,6 +141,7 @@ namespace Company.Route.PL.Controllers
 
         #endregion
 
+        [Authorize(Roles = "Admin")]
         #region Delete Actions
         [HttpGet]
         public async Task<IActionResult> Delete( string? id )

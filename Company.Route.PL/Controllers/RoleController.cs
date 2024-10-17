@@ -9,7 +9,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Company.Route.PL.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
+
     public class RoleController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -23,7 +24,6 @@ namespace Company.Route.PL.Controllers
 
 
 
-        [Authorize]
         #region Index Actions 
         public async Task<IActionResult> Index( string InputSearch )
         {
@@ -69,6 +69,7 @@ namespace Company.Route.PL.Controllers
 
         #endregion
 
+        [Authorize(Roles = "Admin")]
         #region Create Actions 
 
         [HttpGet]
@@ -111,8 +112,7 @@ namespace Company.Route.PL.Controllers
 
 
         #endregion
-        
-        [Authorize]
+
         #region Details Action
 
         [HttpGet]
@@ -139,6 +139,7 @@ namespace Company.Route.PL.Controllers
 
         #endregion
 
+        [Authorize(Roles = "Admin")]
         #region Edit Actions
 
         [HttpGet]
@@ -178,6 +179,7 @@ namespace Company.Route.PL.Controllers
 
         #endregion
 
+        [Authorize(Roles = "Admin")]
         #region Delete Actions
 
         [HttpGet]
@@ -218,6 +220,7 @@ namespace Company.Route.PL.Controllers
 
         #endregion
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> AddOrRemoveUser( string roleId )
         {
@@ -251,7 +254,7 @@ namespace Company.Route.PL.Controllers
 
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> AddOrRemoveUser( string roleId, List<UserInRoleViewModel> users )
         {
@@ -266,26 +269,26 @@ namespace Company.Route.PL.Controllers
                     var appUser = await _userManager.FindByIdAsync(user.UserId);
                     if ( appUser is not null )
                     {
-                        if ( user.IsSelected && !await _userManager.IsInRoleAsync(appUser,role.Name) )
+                        if ( user.IsSelected && !await _userManager.IsInRoleAsync(appUser, role.Name) )
                         {
-                            await _userManager.AddToRoleAsync(appUser,role.Name);
+                            await _userManager.AddToRoleAsync(appUser, role.Name);
                         }
-                        else if ( !user.IsSelected && await _userManager.IsInRoleAsync(appUser, role.Name))
+                        else if ( !user.IsSelected && await _userManager.IsInRoleAsync(appUser, role.Name) )
                         {
                             await _userManager.RemoveFromRoleAsync(appUser, role.Name);
                         }
 
                     }
                 }
-                return RedirectToAction(nameof(Edit) , new {id = roleId});
+                return RedirectToAction(nameof(Edit), new { id = roleId });
 
             }
 
             return View(users);
 
         }
-    
-       
+
+
     }
 }
 

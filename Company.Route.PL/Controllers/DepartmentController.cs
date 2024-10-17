@@ -35,6 +35,7 @@ namespace Company.Route.PL.Controllers
 
         #endregion
 
+        [Authorize(Roles = "Admin")]
         #region Create Actions
 
 
@@ -70,9 +71,10 @@ namespace Company.Route.PL.Controllers
             if ( department == null ) return NotFound();
             return View(viewName, department); // another overload
 
-        } 
+        }
         #endregion
 
+        [Authorize(Roles = "Admin")]
         #region Edit Actions
 
         [HttpGet]
@@ -115,11 +117,12 @@ namespace Company.Route.PL.Controllers
             return View(model);
 
 
-        } 
+        }
 
 
         #endregion
 
+        [Authorize(Roles = "Admin")]
         #region Delete Actions
 
         [HttpGet]
