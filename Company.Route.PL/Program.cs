@@ -69,15 +69,19 @@ namespace Company.Route.PL
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            #region Configure Services & Allow DI
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            #region Dependency Injection Services
+
+            #region Services Lifetime
             // LIFE TIME OF SERVICES
             //builder.Services.AddScoped<AppDbContext>();    // Per Request, Runs while request is running
             //builder.Services.AddSingleton<AppDbContext>(); // Per Application, Runs while application is running
             //builder.Services.AddTransient<AppDbContext>(); // Per operation, Runs every time when we call the operation 
 
             #endregion
+
             // Extension method to apply DI include all services [ scoped , singelton , transient ] ,default is scoped
             builder.Services.AddDbContext<AppDbContext>(Options =>
             {
@@ -113,9 +117,9 @@ namespace Company.Route.PL
                    //config.Lockout.MaxFailedAccessAttempts = 5; // attempts lock account after it
                    //config.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(3); // time locked
 
-                })
+               })
                 .AddEntityFrameworkStores<AppDbContext>()
-                .AddDefaultTokenProviders()  ;
+                .AddDefaultTokenProviders();
 
             builder.Services.ConfigureApplicationCookie(config =>
             {
@@ -126,8 +130,11 @@ namespace Company.Route.PL
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
             builder.Services.AddTransient<IMailService, EmailSettings>();
 
+            #endregion
+
             var app = builder.Build();
 
+            #region Configure HTTP Request & Middleware
             // Configure the HTTP request pipeline.
             if ( !app.Environment.IsDevelopment() )
             {
@@ -136,7 +143,7 @@ namespace Company.Route.PL
                 app.UseHsts();
             }
 
-             
+
 
 
             app.UseHttpsRedirection();
@@ -148,6 +155,8 @@ namespace Company.Route.PL
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
+
+            #endregion
 
             app.Run();
         }
