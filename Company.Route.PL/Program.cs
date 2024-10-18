@@ -130,6 +130,10 @@ namespace Company.Route.PL
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
             builder.Services.AddTransient<IMailService, EmailSettings>();
 
+            // SmsSettings
+            builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twilio"));
+            builder.Services.AddTransient<ISmsService, SmsService>();
+
             #endregion
 
             var app = builder.Build();

@@ -1,28 +1,24 @@
-﻿    @model ForgetPasswordViewModel
+﻿
 @{
-    ViewData["Title"] = "ForgetPassword";
+    ViewData["Title"] = "CheckYourPhone";
     Layout = "~/Views/Shared/_AuthLayout.cshtml";
 }
 
-
 <div class="main-agileinfo">
     <div class="agileits-top">
-        <form asp-action="HandleForgetPassword">
 
-            <input class="text email" asp-for="Email" placeholder="Email" required="">
+        <div>
+            <p> Password Reset Link has been sent to your Phone. Please Check your Dm </p>
+        </div>
 
-            <input type="submit" name="action"  value="SendEmail">
-            <input type="submit" name="action"  value="SendSms">
-        </form>
+     
 
         <p>Don't have an Account? <a asp-action="SignUp"> Register Now!</a></p>
     </div>
 </div>
-
 
 @section ClientSideValidation {
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"> </script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 
 }
-

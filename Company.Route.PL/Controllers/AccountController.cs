@@ -11,22 +11,26 @@ namespace Company.Route.PL.Controllers
 {
     // Password01 : P@$$w0rd
     // Password02 :     
+    // DHH36HXBBPD9X1GH3A687AP7
 
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly Helpers.IMailService _mailService;
+        private readonly ISmsService _smsService;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            Helpers.IMailService mailService
+            Helpers.IMailService mailService,
+            ISmsService smsService
         )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _mailService = mailService;
+            _smsService = smsService;
         }
 
 
@@ -125,14 +129,15 @@ namespace Company.Route.PL.Controllers
 
         #endregion
 
-        #region ForgetPassword & Send Email 
+        #region Forget & Reset Password [Email , Sms]
         public IActionResult ForgetPassword()
         {
             return View();
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> ForgetPassword( ForgetPasswordViewModel viewModel )
+        public async Task<IActionResult> HandleForgetPassword( ForgetPasswordViewModel viewModel, string action )
         {
             if ( ModelState.IsValid )
             {
@@ -140,32 +145,55 @@ namespace Company.Route.PL.Controllers
                 if ( user is not null )
                 {
                     var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    var ResetPasswordUrl = Url.Action(
-                       "ResetPassword",
-                    "Account",
-                       new { email = viewModel.Email, token = token },
-                     Request.Scheme,   // Scheme (http or https)
-                        Request.Host.ToString() // Host (localhost:port or domain)
-                        );
-                    var email = new Email()
-                    {
-                        Subject = "Reset Your Password",
-                        Reciepints = viewModel.Email,
-                        Body = $"{ResetPasswordUrl}"
-                    };
-                    //EmailSettings.SendEmail(email); // Old way using smtp
-                    _mailService.SendEmail(email);
-                    return RedirectToAction(nameof(CheckYourInbox));
-                }
-                ModelState.AddModelError(string.Empty, "Invalid Email");
+                    var resetPasswordUrl = Url.Action(
+                        "ResetPassword",
+                        "Account",
+                        new { email = viewModel.Email, token = token },
+                        Request.Scheme,
+                        Request.Host.ToString()
+                    );
 
+                    if ( action == "SendEmail" )
+                    {
+                        var email = new Email
+                        {
+                            Subject = "Reset Your Password",
+                            Reciepints = viewModel.Email,
+                            Body = $"Reset your password using this link: {resetPasswordUrl}"
+                        };
+
+                        _mailService.SendEmail(email);
+                        return RedirectToAction(nameof(CheckYourInbox));
+                    }
+                    else if ( action == "SendSms" )
+                    {
+                        var sms = new SmsMessage
+                        {
+                            Body = $"Reset your password: {resetPasswordUrl}",
+                            PhoneNumber = user.PhoneNumber
+                        };
+
+                        _smsService.Send(sms);
+                        //return Ok("Check Your Phone");
+                        return RedirectToAction(nameof(CheckYourPhone));
+
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid Email");
+                }
             }
 
-
-            return View(viewModel);
+            return View("ForgetPassword", viewModel);
         }
 
+
         public IActionResult CheckYourInbox()
+        {
+            return View();
+        }   
+        public IActionResult CheckYourPhone()
         {
             return View();
         }
@@ -203,12 +231,17 @@ namespace Company.Route.PL.Controllers
             }
             return View(viewModel);
         }
+
         #endregion
 
+        #region AccessDenied
         public IActionResult AccessDenied()
         {
             return View();
         }
+
+        #endregion
+
 
 
     }
