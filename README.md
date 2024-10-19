@@ -2,6 +2,11 @@
 
 This project is an ASP.NET Core MVC web application built using N-Tier architecture, primarily focused on performing CRUD operations for employees and departments. The core emphasis is on backend functionality, complemented by a minimal front-end interface.
 
+## **Deployed Website**
+
+You can access the deployed version of the project here:  
+[**Company MVC Project - Live Demo**](<INSERT-YOUR-WEBSITE-LINK-HERE>)
+
 
 
 
