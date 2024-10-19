@@ -6,7 +6,8 @@ This project is an ASP.NET Core MVC web application built using N-Tier architect
 
 You can access the deployed version of the project here:  
 [**Company MVC Project - Live Demo**](<http://crudmvcroute.runasp.net/>)
-
+> **Note:**  
+You can register with your actual email address and assign it the desired role to explore the full functionality of the system, including role-based behaviors.
 
 
 
