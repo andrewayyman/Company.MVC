@@ -1,10 +1,8 @@
-﻿using AutoMapper;
-using Company.Route.DAL.Models;
+﻿using Company.Route.DAL.Models;
 using Company.Route.PL.ViewModels.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
 
 namespace Company.Route.PL.Controllers
@@ -69,7 +67,7 @@ namespace Company.Route.PL.Controllers
 
         #endregion
 
-        [Authorize(Roles = "Admin")]
+
         #region Create Actions 
 
         [HttpGet]
@@ -140,7 +138,7 @@ namespace Company.Route.PL.Controllers
 
         #endregion
 
-        [Authorize(Roles = "Admin")]
+
         #region Edit Actions
 
         [HttpGet]
@@ -181,7 +179,6 @@ namespace Company.Route.PL.Controllers
         #endregion
 
 
-        [Authorize(Roles = "Admin")]
         #region Delete Actions
 
         [HttpGet]
@@ -223,7 +220,6 @@ namespace Company.Route.PL.Controllers
         #endregion
 
 
-        [Authorize(Roles = "Admin")]
         #region AddOrRemoveUser
         [HttpGet]
         public async Task<IActionResult> AddOrRemoveUser( string roleId )

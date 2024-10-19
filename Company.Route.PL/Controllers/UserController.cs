@@ -7,7 +7,6 @@ using Company.Route.PL.ViewModels.Employess;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 
 namespace Company.Route.PL.Controllers
@@ -101,7 +100,6 @@ namespace Company.Route.PL.Controllers
         #endregion
 
 
-        [Authorize(Roles = "Admin")]
         #region Edit Actions
 
         [HttpGet]
@@ -144,7 +142,6 @@ namespace Company.Route.PL.Controllers
         #endregion
 
 
-        [Authorize(Roles = "Admin")]
         #region Delete Actions
         [HttpGet]
         public async Task<IActionResult> Delete( string? id )
