@@ -9,19 +9,16 @@ namespace Company.Route.PL.Controllers
     [Authorize]
     public class DepartmentController : Controller
     {
-        // Allow for interface not concrete class
-        //private readonly IDepartmentRepository _departmentRepository; // Null 
+  
         private readonly IUnitOfWork _unitOfWork;
 
         public DepartmentController ( 
 
-            //IDepartmentRepository departmentRepository, 
             IUnitOfWork UnitOfWork
             
         )
         {
             _unitOfWork = UnitOfWork;
-            //_departmentRepository = departmentRepository;
         }
 
 
@@ -64,12 +61,12 @@ namespace Company.Route.PL.Controllers
 
         #region Details Actions
         [HttpGet]
-        public async Task<IActionResult> Details( int? id, string viewName = "Details" ) // passing view for refactoring the code , use it in any action with same bhaviour but change the returned view
+        public async Task<IActionResult> Details( int? id, string viewName = "Details" ) 
         {
-            if ( id is null ) return BadRequest(); // 400
+            if ( id is null ) return BadRequest(); 
             var department = await _unitOfWork.DepartmentRepository.GetByIdAsync(id.Value);
             if ( department == null ) return NotFound();
-            return View(viewName, department); // another overload
+            return View(viewName, department); 
 
         }
         #endregion
@@ -80,19 +77,13 @@ namespace Company.Route.PL.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit( int? id )
         {
-            #region Before Refactoring
-
-            //    if ( id is null ) return BadRequest();
-            //    var department = _departmentRepository.GetById(id.Value);
-            //    if ( department == null ) return NotFound();
-            //    return View(department);
-            #endregion
+          
 
             return await Details(id, "Edit");
         }
 
 
-        [HttpPost] // FromRoute is to bind the id frm segment only to don't make any conflict
+        [HttpPost] 
         [ValidateAntiForgeryToken] // to allow only request from ur client side [used usually with post method in MVC APP]
         public async Task<IActionResult> Edit( [FromRoute] int? id, Department model )
         {
@@ -110,7 +101,7 @@ namespace Company.Route.PL.Controllers
             }
             catch ( Exception ex )
             {
-                ModelState.AddModelError(string.Empty, ex.Message); // is to 
+                ModelState.AddModelError(string.Empty, ex.Message); 
             }
 
 
@@ -129,12 +120,6 @@ namespace Company.Route.PL.Controllers
         public async Task<IActionResult> Delete( int? id )
         {
 
-            #region Before Refactoring
-            //if ( id is null ) return BadRequest();
-            //var department = _departmentRepository.GetById(id.Value);
-            //if ( department is null ) return NotFound();
-            //return View(department); 
-            #endregion
             return await Details(id, "Delete");
         }
 

@@ -4,14 +4,10 @@ using Company.Route.PL.ViewModels.Account;
 using MailKit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Drawing;
-using System.Security.Cryptography.X509Certificates;
+
 
 namespace Company.Route.PL.Controllers
 {
-    // Password01 : P@$$w0rd
-    // Password02 :     
-    // DHH36HXBBPD9X1GH3A687AP7
 
     public class AccountController : Controller
     {
@@ -56,7 +52,7 @@ namespace Company.Route.PL.Controllers
                 var user = new ApplicationUser()
                 {
                     // take username from email
-                    UserName = viewModel.Email.Split("@")[0], // take string before @ 
+                    UserName = viewModel.Email.Split("@")[0], 
                     Email = viewModel.Email,
                     IsAgree = viewModel.IsAgree,
                     FName = viewModel.FName,
@@ -174,7 +170,6 @@ namespace Company.Route.PL.Controllers
                         };
 
                         _smsService.Send(sms);
-                        //return Ok("Check Your Phone");
                         return RedirectToAction(nameof(CheckYourPhone));
 
                     }
@@ -241,6 +236,7 @@ namespace Company.Route.PL.Controllers
         }
 
         #endregion
+
 
 
 

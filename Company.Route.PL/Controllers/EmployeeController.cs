@@ -11,27 +11,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace Company.Route.PL.Controllers
 {
 
-    #region Request Flow After UnitofWork
-    // Now Communication is  ::::: Now Controllers -->> UnitOfWork -->> Repositories -->> DbContext
-
-    // The Full request flow from request to response
-    // 1. Request from client to controller using route of the action
-    // 2. Controller get the request and call the unitofwork to get the data from database
-    // 3. Unitofwork call the repository to get the data from database
-    // 4. Repository get the data from database using the DbContext
-    // 5. Repository return the data to the unitofwork
-    // 6. Unitofwork return the data to the controller
-    // 7. Controller return the data to the client as response [view in mvc]
-
-    #endregion
 
     [Authorize]
 
     public class EmployeeController : Controller
     {
-        /// Allow for interface not concrete class
-        ///private readonly IEmployeeRepository _employeeRepository; // Null 
-        ///private readonly IDepartmentRepository _departmentRepository;
+
 
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -39,15 +24,10 @@ namespace Company.Route.PL.Controllers
         public EmployeeController(
 
             /// NOTE :: After using unitofwork no need to inject repositories we inject unitofwork and use it to access the repositories
-            ///IEmployeeRepository employeeController,                                    
-            ///IDepartmentRepository departmentRepository,
-
             IUnitOfWork unitOfWork,
             IMapper mapper
         )
         {
-            ///_employeeRepository = employeeController;
-            ///_departmentRepository = departmentRepository;
 
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -58,29 +38,10 @@ namespace Company.Route.PL.Controllers
 
         #region Index Actions
 
-        ///=>> in case of search feature u need to make it post and u need to make it get to getall the employees both in same action then make it without any specified method it will be hybrid 
-        ///[HttpGet] ,, if u dont specify the request method it will be flexible :: get when need , post when need
+       
         public async Task<IActionResult> Index( string InputSearch )
         {
 
-            #region ViewData , ViewBag , TempData
-            //// Extra info ? 
-            //// Binding through views Using Dictionary [Key , Value] pair 
-            //// inherited from controller class
-            //// [ViewData , ViewBag] : transfer data from action to view or from view to view *ONE WAY* 
-            //// [ViewTemp] : transfer data from action to action 
-
-            //// 1. ViewData : Strongly Typed 
-            //ViewData["Message"] = "Hello from ViewData";
-
-            //// 2. ViewBAg : Dynamic Type "Weak data Type"
-            //ViewBag.Message = "Hello from ViewBag"; // access with . 
-
-            //// --------- NOTE THAT BOTH STORE IN SAME DICT THEN THEY OVERRIDE THE LAST VALUE STORES ---------- // 
-
-            //// 3.TempData : transfer data from action to action , used as dict 
-            //// Example on create method 
-            #endregion
 
             var employees = Enumerable.Empty<Employee>();
             if ( string.IsNullOrEmpty(InputSearch) )
@@ -109,9 +70,7 @@ namespace Company.Route.PL.Controllers
         public async Task<IActionResult> Create()
         {
             var departments = await _unitOfWork.DepartmentRepository.GetAllAsync();
-            // Use ViewDict to send extra info from request to view ViewData , ViewBag , TempData
-
-            // 1 ViewData
+          
             ViewData["Departments"] = departments;
 
             return View();
@@ -121,7 +80,6 @@ namespace Company.Route.PL.Controllers
         [HttpPost]
         public async Task<IActionResult> Create( EmployeeViewModel viewModel )
         {
-            // 3. TempData => Action to action
 
             if ( ModelState.IsValid )
             {
@@ -132,28 +90,7 @@ namespace Company.Route.PL.Controllers
 
                 }
 
-
-                // Mapping EmployeeViewModel -->> Employee
-                // We need Casting EmployeeViewModel -->> Employee  Which is mapping [Manual , Auto ]
-                #region 1. Manual Mapping
-                //// 1. Manual Mapping
-                //Employee employee = new Employee()
-                //{
-                //    Id = model.Id,
-                //    Address = model.Address,
-                //    Name = model.Name,
-                //    Salary = model.Salary,
-                //    Age = model.Age,
-                //    HiringDate = model.HiringDate,
-                //    IsActive = model.IsActive,
-                //    WorkFor = model.WorkFor,
-                //    WorkForID = model.WorkForID,
-                //    Email = model.Email,
-                //    PhoneNumber = model.PhoneNumber,
-                //}; 
-                #endregion
-
-                // 2. AutoMapper
+                // AutoMapper
                 var employee = _mapper.Map<EmployeeViewModel, Employee>(viewModel);
 
 
@@ -209,15 +146,13 @@ namespace Company.Route.PL.Controllers
         public async Task<IActionResult> Edit( int? id )
         {
             var departments = await _unitOfWork.DepartmentRepository.GetAllAsync();
-            // Use ViewDict to send extra info from request to view ViewData , ViewBag , TempData
-
-            // 1 ViewData
+          
             ViewData["Departments"] = departments;
             return await Details(id, "Edit");
         }
 
 
-        [HttpPost] // FromRoute is to bind the id frm segment only to don't make any conflict
+        [HttpPost] 
         [ValidateAntiForgeryToken] // to allow only request from ur client side [used usually with post method in MVC APP]
         public async Task<IActionResult> Edit( [FromRoute] int? id, EmployeeViewModel viewModel )
         {
@@ -237,7 +172,7 @@ namespace Company.Route.PL.Controllers
 
                 var employee = _mapper.Map<Employee>(viewModel);
 
-                if ( id != viewModel.Id ) return BadRequest(); // Then the id in segment not like the sent from the form 
+                if ( id != viewModel.Id ) return BadRequest(); 
 
                 _unitOfWork.EmployeeRepository.Update(employee);
                 var Count = await _unitOfWork.CompleteAsync();

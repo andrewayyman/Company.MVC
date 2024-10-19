@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using System.Net;
-//using System.Net.Mail;
 
 namespace Company.Route.PL.Helpers
 {

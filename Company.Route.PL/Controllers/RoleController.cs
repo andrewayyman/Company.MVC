@@ -113,6 +113,7 @@ namespace Company.Route.PL.Controllers
 
         #endregion
 
+
         #region Details Action
 
         [HttpGet]
@@ -179,6 +180,7 @@ namespace Company.Route.PL.Controllers
 
         #endregion
 
+
         [Authorize(Roles = "Admin")]
         #region Delete Actions
 
@@ -220,7 +222,9 @@ namespace Company.Route.PL.Controllers
 
         #endregion
 
+
         [Authorize(Roles = "Admin")]
+        #region AddOrRemoveUser
         [HttpGet]
         public async Task<IActionResult> AddOrRemoveUser( string roleId )
         {
@@ -254,7 +258,6 @@ namespace Company.Route.PL.Controllers
 
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> AddOrRemoveUser( string roleId, List<UserInRoleViewModel> users )
         {
@@ -286,7 +289,8 @@ namespace Company.Route.PL.Controllers
 
             return View(users);
 
-        }
+        } 
+        #endregion
 
 
     }

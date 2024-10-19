@@ -78,6 +78,7 @@ namespace Company.Route.PL.Controllers
 
         #endregion
 
+
         #region Details Action
         [HttpGet]
 
@@ -98,6 +99,7 @@ namespace Company.Route.PL.Controllers
 
 
         #endregion
+
 
         [Authorize(Roles = "Admin")]
         #region Edit Actions
@@ -140,6 +142,7 @@ namespace Company.Route.PL.Controllers
         }
 
         #endregion
+
 
         [Authorize(Roles = "Admin")]
         #region Delete Actions

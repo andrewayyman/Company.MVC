@@ -73,66 +73,30 @@ namespace Company.Route.PL
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
-            #region Services Lifetime
-            // LIFE TIME OF SERVICES
-            //builder.Services.AddScoped<AppDbContext>();    // Per Request, Runs while request is running
-            //builder.Services.AddSingleton<AppDbContext>(); // Per Application, Runs while application is running
-            //builder.Services.AddTransient<AppDbContext>(); // Per operation, Runs every time when we call the operation 
-
-            #endregion
-
-            // Extension method to apply DI include all services [ scoped , singelton , transient ] ,default is scoped
             builder.Services.AddDbContext<AppDbContext>(Options =>
             {
                 // Read it from AppSettings
                 Options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
-
-            // means when we ask for IDepartmentRepository , create object of DepartmentRepository
-            //builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-            //builder.Services.AddScoped<IEmployeeRepository,EmployeeRepository>();
-
             // NOTE :: AFTER USING UNITOFWORK NO NEED TO INJECT REPOSITORIES WE INJECT UNITOFWORK AND USE IT TO ACCESS THE REPOSITORIES
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-
-            // Allow AutoMapper , it needs object from mappingprofile 
             builder.Services.AddAutoMapper(typeof(MappingProfiles)); // transient lifetime
+            // MailKitSettings
+            builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+            builder.Services.AddTransient<IMailService, EmailSettings>();
+            // SmsSettings
+            builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twilio"));
+            builder.Services.AddTransient<ISmsService, SmsService>();
 
-            // Services for User nad SignIn Managers after using identity
-            #region Identity Servies
-            //builder.Services.AddScoped<UserManager<ApplicationUser>>();
-            //builder.Services.AddScoped<SignInManager<ApplicationUser>>();
-            //builder.Services.AddScoped<RoleManager<ApplicationUser>>(); 
-            #endregion // instead of them we can use only one do the same
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(config =>
                {
-                   //config.Password.RequiredUniqueChars = 2;
-                   //config.Password.RequireDigit = true;
-                   //config.Password.RequireLowercase = true;
-                   //config.Password.RequireUppercase = true;
-                   //config.Password.RequireNonAlphanumeric = true;
-                   //config.User.RequireUniqueEmail = true;
-                   //config.Lockout.MaxFailedAccessAttempts = 5; // attempts lock account after it
-                   //config.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(3); // time locked
-
                })
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
-
             builder.Services.ConfigureApplicationCookie(config =>
             {
                 config.LoginPath = "/Account/SignIn";
             });
-
-            // MailKitSettings
-            builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
-            builder.Services.AddTransient<IMailService, EmailSettings>();
-
-            // SmsSettings
-            builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twilio"));
-            builder.Services.AddTransient<ISmsService, SmsService>();
 
             #endregion
 

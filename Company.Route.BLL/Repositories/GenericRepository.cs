@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Company.Route.BLL.Repositories
 {
-    // now we make the Repository in only Can be valid if the class is type of BaseEntity(Employee,Department)
+    // the Repository in only Can be valid if the class is type of BaseEntity(Employee,Department)
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
 
