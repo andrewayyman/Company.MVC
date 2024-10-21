@@ -32,6 +32,7 @@ This system provides:
 - **Authentication and Authorization**:
   - Role-based access using **ASP.NET Identity**.
 - **Automapper** for object mapping and cleaner code.
+- **Generic Repository Pattern** and **Unit of Work** to manage database operations efficiently.
 
 ---
 
@@ -43,8 +44,11 @@ This system provides:
 - **EntityFramework**
 - **LINQ**:
 - **ASP.NET Identity**
+- **Generic Repository Pattern**
+- **Unit of Work**
 - **AutoMapper**
 - **MailKit**
 - **Twilio**
+
    
 
