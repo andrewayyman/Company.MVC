@@ -9,6 +9,10 @@ You can access the deployed version of the project here:
 > **Note:**  
 You can register with your actual email address and assign it the desired role to explore the full functionality of the system, including role-based behaviors.
 
+> Or To Act as an Admin you can use 👇
+
+> Email : andrewayman100@gmail.com , Password : P@$$w0rd
+
 
 
 
